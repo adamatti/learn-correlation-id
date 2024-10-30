@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 export const REQUEST_ID_HTTP_HEADER = "x-request-id";
 export const ORIGINATOR_REQUEST_ID_HTTP_HEADER = "x-originator-request-id";
 
-type LogContext = {
+export type LogContext = {
 	OriginatorRequestId: string;
 	RequestId: string;
 };
@@ -15,10 +15,10 @@ export const withLogContext = async <R>(
 	initialContext: Partial<LogContext>,
 	func: (logContext: LogContext) => R,
 ) => {
-	initialContext.OriginatorRequestId =
-		initialContext.OriginatorRequestId ?? randomUUID();
+	// Set default values
+	initialContext.OriginatorRequestId ||= randomUUID();
 
-	initialContext.RequestId = initialContext.RequestId ?? randomUUID();
+	initialContext.RequestId ||= randomUUID();
 
 	return await storage.run(initialContext, async () => {
 		return await func(initialContext as LogContext);
@@ -33,7 +33,7 @@ const doLog = (level: string) => {
 	return (message: string, ...args: any[]) => {
 		const context = getLogContext();
 		console.log(new Date(), level.toUpperCase(), message, {
-			...args,
+			...(args.length === 1 ? args[0] : args),
 			...context,
 		});
 	};
