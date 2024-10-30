@@ -31,4 +31,6 @@ It will do one sqs sub call, then a http one.
 
 With that you can search in the logs using the `OriginatorRequestId`.
 
+# TIL
 
+- [Logical OR assignment (||=)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR_assignment)
